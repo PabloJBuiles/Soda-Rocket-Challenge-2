@@ -1,82 +1,65 @@
-﻿using Cinemachine;
-using System;
+﻿using System;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class Lanzamiento : MonoBehaviour
 {
 
-    //cambio de botalla
-
-    //Contador de tiempo para sighuinte item gratis
-    // float tiempoRestante;
-    //lanzamiento en la ui    
-    [SerializeField] Transform transformInicial;
+    Transform transformInicial;
     int lanzamientosDiponibles = 20;//cantidad de lanzamientos iniciales
-    public DateTime LDate;
-    private new Transform transform;
-    [SerializeField] float fuerzaInicial;//medidor de fuerza hasta 5;
+   
     private new Rigidbody2D rigidbody;
-    private new ConstantForce2D constantForce;
+    
     private bool lanzado = false;//VERIFICAR SI LA BOTELLA FUE LANZADA SRRY NMAYUS    
-    CinemachineVirtualCamera mCam;// la camara para los zooms
-    [SerializeField] float tt;
-    PolygonCollider2D colliderDosDe;
-    /// <summary>
-    /// /Sahke
-    /// </summary>
-    [SerializeField] float distanciaDeAlejamiento = 1.47f;
     // Start is called before the first frame update
-    void Start()
-    {  
-        constantForce = GetComponent<ConstantForce2D>();
-        transform = GetComponent<Transform>();
-        rigidbody = GetComponent<Rigidbody2D>();
-        mCam = GameObject.Find("CM vcam1").GetComponent<CinemachineVirtualCamera>();
-        mCam.m_Lens.OrthographicSize = 5;
-        this.gameObject.AddComponent<PolygonCollider2D>();
-        colliderDosDe = GetComponent<PolygonCollider2D>();
-        Debug.Log(lanzamientosDiponibles);
 
-    }
-    public void LanzamientoBotella()
+    public void IniciarLanzamiento()
     {
-        if (lanzamientosDiponibles > 0)
-        {
-            if (!lanzado && fuerzaInicial > 0)
+
+        rigidbody = GetComponent<Rigidbody2D>();
+        this.gameObject.AddComponent<PolygonCollider2D>();
+        transformInicial = GameObject.Find("PosicionInicial").GetComponent<Transform>();
+        Debug.Log(lanzamientosDiponibles);
+    }
+    /// <summary>
+    /// Pone la botella en su posicion inicial
+    /// Agrega fuerza a la botella
+    /// activa la gravedad
+    /// 
+    /// </summary>
+    public bool LanzamientoBotella(float fuerzaInicial,int LanzamientosRestantes)
+    {
+            if (!lanzado && fuerzaInicial > 0 && LanzamientosRestantes > 0)
             {
-                this.transform.position = transformInicial.position;
-                this.transform.rotation = transformInicial.rotation;
+                transform.position = transformInicial.position;
+                transform.rotation = transformInicial.rotation;
                 rigidbody.freezeRotation = false;
-                colliderDosDe.isTrigger = true;
                 rigidbody.gravityScale = 1;
                 lanzado = true;
-                colliderDosDe.isTrigger = false;
-                Vector2 mvector = new Vector2(Input.acceleration.x, Input.acceleration.y * -1);
-                rigidbody.AddForce(Vector2.up * ((fuerzaInicial * 400) + 250));
-                lanzamientosDiponibles--;
-                //fuerzaInicial = 0;
+                //Vector2 mvector = new Vector2(Input.acceleration.x, Input.acceleration.y * -1);
+
+                rigidbody.AddTorque(UnityEngine.Random.Range(-4.0f, 4.0f));
+      
+                rigidbody.AddForce(Vector2.up * fuerzaInicial*50);
                 Debug.Log(lanzamientosDiponibles + "Despues del lanzamiento");
+                return true;
             }
-        }
+                return false;
     }
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        Debug.Log("collicion");
-        if (rigidbody.velocity.magnitude < 1f && lanzado)
-        {
-            Invoke("Preparado", 2.1f);       
-            Debug.Log("Preparado");
-        }
-    }
+    private void OnCollisionStay2D(Collision2D collision) => Preparado();
+    //verifica si la botella dejo de moverse para volver a hacer el lanzamiento.
     public void Preparado()
     {
-        if (rigidbody.velocity.magnitude < 0.05f)
+        if (rigidbody.velocity.magnitude < 0.05f && lanzado)
         {
             lanzado = false;
             rigidbody.freezeRotation = true;
-            rigidbody.gravityScale = 0;          
+            rigidbody.gravityScale = 0;
             rigidbody.velocity = Vector2.zero;
+            Debug.Log("Preparado");
         }
     }//solucionar con rayos(solucionado :3)
+
 }
