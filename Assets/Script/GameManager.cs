@@ -5,16 +5,20 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
-    // Start is called before the first frame update
-    [SerializeField] float distanciaTotal, fuezaInicial;
-    [SerializeField] int LanzamientosRestantes = 20;
-    [SerializeField] int lanzamientosMaximos = 20;
-    
 
-    public float DistanciaTotal { get => distanciaTotal; set => distanciaTotal = value; }
-    public float FuezaInicial { get => fuezaInicial; set => fuezaInicial = value; }
-    public int LanzamientosRestantes1 { get => LanzamientosRestantes; set => LanzamientosRestantes = value; }
-    public int LanzamientosMaximos { get => lanzamientosMaximos; set => lanzamientosMaximos = value; }
+
+
+    private int mentas;
+    [SerializeField] private Sprite[] botellasSprites;
+
+    private List<bool> botellasAdquiridas;
+
+    public List<bool> BotellasAdquiridas => botellasAdquiridas;
+
+    public int idBotellaEnUso;
+
+   
+    public  Sprite[] BotellasSprites => botellasSprites;
 
     private void Awake()
     {
@@ -29,7 +33,21 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        
+        for (int i = 0; i < botellasSprites.Length; i++)
+        {
+            botellasAdquiridas.Add(new bool());
+        }
+
+        botellasAdquiridas[0] = true;
+    }
+
+    public bool ComprarBotella(int idBotella)
+    {
+        if (mentas < 100) return false;
+        mentas -= 100;
+        botellasAdquiridas[idBotella] = true;
+        return true;
+
     }
 
 }

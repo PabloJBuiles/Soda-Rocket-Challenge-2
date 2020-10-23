@@ -7,21 +7,19 @@ using System.Collections;
 public class Lanzamiento : MonoBehaviour
 {
 
-    Transform transformInicial;
-    int lanzamientosDiponibles = 20;//cantidad de lanzamientos iniciales
-   
     private new Rigidbody2D rigidbody;
-    
-    private bool lanzado = false;//VERIFICAR SI LA BOTELLA FUE LANZADA SRRY NMAYUS    
-    // Start is called before the first frame update
+    [SerializeField] private float stopTime;
+    private static bool lanzado = false;//VERIFICAR SI LA BOTELLA FUE LANZADA SRRY NMAYUS   
 
+    public static bool Lanzado => lanzado;
+
+    // Start is called before the first frame update
+    private AgitacionBotella agitacionBotella;
     public void IniciarLanzamiento()
     {
-
+        
         rigidbody = GetComponent<Rigidbody2D>();
-        this.gameObject.AddComponent<PolygonCollider2D>();
-        transformInicial = GameObject.Find("PosicionInicial").GetComponent<Transform>();
-        Debug.Log(lanzamientosDiponibles);
+        gameObject.AddComponent<PolygonCollider2D>();
     }
     /// <summary>
     /// Pone la botella en su posicion inicial
@@ -29,37 +27,47 @@ public class Lanzamiento : MonoBehaviour
     /// activa la gravedad
     /// 
     /// </summary>
-    public bool LanzamientoBotella(float fuerzaInicial,int LanzamientosRestantes)
+    public bool LanzamientoBotella()
     {
-            if (!lanzado && fuerzaInicial > 0 && LanzamientosRestantes > 0)
+            if (!lanzado && AgitacionBotella.FuerzaBotella > 5)
             {
-                transform.position = transformInicial.position;
-                transform.rotation = transformInicial.rotation;
+                
                 rigidbody.freezeRotation = false;
                 rigidbody.gravityScale = 1;
                 lanzado = true;
                 //Vector2 mvector = new Vector2(Input.acceleration.x, Input.acceleration.y * -1);
 
-                rigidbody.AddTorque(UnityEngine.Random.Range(-4.0f, 4.0f));
+                //rigidbody.AddTorque(UnityEngine.Random.Range(-4.0f, 4.0f));
       
-                rigidbody.AddForce(Vector2.up * fuerzaInicial*50);
-                Debug.Log(lanzamientosDiponibles + "Despues del lanzamiento");
+                rigidbody.AddForce(transform.right *  AgitacionBotella.FuerzaBotella, ForceMode2D.Impulse);
+            
                 return true;
             }
-                return false;
+            return false;
     }
     private void OnCollisionStay2D(Collision2D collision) => Preparado();
-    //verifica si la botella dejo de moverse para volver a hacer el lanzamiento.
+    private void OnCollisionExit(Collision other) => stopTime = 0;
+
+
+    /// <summary>
+    ///verifica si la botella dejo de moverse para volver a hacer el lanzamiento. 
+    /// </summary>
     public void Preparado()
     {
-        if (rigidbody.velocity.magnitude < 0.05f && lanzado)
+        if (rigidbody.velocity.magnitude < 0.03f && lanzado && stopTime > 3)
         {
             lanzado = false;
             rigidbody.freezeRotation = true;
             rigidbody.gravityScale = 0;
             rigidbody.velocity = Vector2.zero;
             Debug.Log("Preparado");
+            stopTime = 0;
         }
+        else if(lanzado)
+        {
+            stopTime += Time.deltaTime;
+        }
+           
     }//solucionar con rayos(solucionado :3)
 
 }

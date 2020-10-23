@@ -1,62 +1,94 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+[RequireComponent(typeof(Rigidbody2D))]
 public class MedidorDeAltitud : MonoBehaviour
 {
-    // Start is called before the first frame update
-    Transform tranformDeBotella;
-    Text textMax;
-    Text textMetrosTotales;
+    //Delegados
+    public delegate void OnMovement();
+    //
+    public event OnMovement onMovement;
+    
+    [SerializeField]
+    private UIObserver[] observers = new UIObserver[1];
+    public bool hasRegisteredObservers;
+    private Rigidbody2D _rigidbody2D;
+    
     float alturaActual;
     float alturaMaxima;
     float acumuladoAlturaMaxima;
     bool puntoMaximo;
+    private string sAlturaMaxima;
+    private string sAlturaActual;
 
- 
+    public string SAlturaActual => sAlturaActual;
+    public string SAlturaMaxima => sAlturaMaxima;
+
     public void IniciarMedidorDeAltitud()
     {
-        textMax = GetComponent<Text>();
-        textMetrosTotales = GameObject.Find("AlturaActual").GetComponent<Text>();
-        tranformDeBotella = GameObject.Find("Botella").GetComponent<Transform>();
+        if (observers !=null)
+        {
+            observers[0]=(GameObject.Find("GameManager").GetComponent<UIObserver>());
+        }
+        
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        RegisterObservers();
+        NotifyObservers();
     }
     // Update is called once per frame
-    void Update()
-    {
-        CalcularAlturas();
-    }
 
+    /// <summary>
+    /// revisa si la botella a superado su altura maxima para actualizarla y detecta la altura actual
+    /// </summary>
     private void CalcularAlturas()
     {
-        alturaActual = tranformDeBotella.position.y;
+        alturaActual = _rigidbody2D.position.y * 3;
         if (alturaActual > alturaMaxima)
         {
-            alturaMaxima = alturaActual;
-            puntoMaximo = false;
+            alturaMaxima = alturaActual; 
         }
-        else if (!puntoMaximo)
-        {
-            acumuladoAlturaMaxima += alturaMaxima;
-            puntoMaximo = true;
-        }
-        textMax.text = ((int)alturaMaxima).ToString()+"m";
-        textMetrosTotales.text = ((int)acumuladoAlturaMaxima).ToString()+" Altura maxima total";
-    }
-    public bool ReiniciarTextos(bool puedeReinicial)
-    {
-        if (puedeReinicial) {
-            alturaActual = 0;
-            alturaMaxima = 0;
-            return true;
-        }
-        return false;
+
+        sAlturaMaxima = ((int)alturaMaxima) +"m";
+        sAlturaActual = ((int)alturaActual) +" Altura actual";
+        NotifyObservers();
     }
 
-    public float ConvertirDistanciaTotal()
+    private void Update()
     {
-        float distanciaAConvertir = acumuladoAlturaMaxima;
-        acumuladoAlturaMaxima = 0;
-        return distanciaAConvertir;
+        if (_rigidbody2D.velocity.magnitude > 2f)
+        {
+            CalcularAlturas();
+        }
+    }
+
+
+    private void UnregisterObservers()
+    {
+        hasRegisteredObservers = false;
+
+        foreach (UIObserver observer in observers)
+        {
+            observer.UnregisterAltitud(this);
+        }
+    }
+    private void RegisterObservers()
+    {
+        foreach (UIObserver observer in observers)
+        {
+            observer.RegisterAltitud(this);
+        }
+
+        hasRegisteredObservers = true;
+    }
+    
+
+    private void NotifyObservers()
+    {
+        if (onMovement != null)
+        {
+            onMovement();
+        }
     }
 }

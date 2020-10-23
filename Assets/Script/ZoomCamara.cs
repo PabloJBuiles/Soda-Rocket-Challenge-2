@@ -6,7 +6,7 @@ using Cinemachine;
 public class ZoomCamara : MonoBehaviour
 {
     CinemachineVirtualCamera mCam;
-    float zoom;
+    [SerializeField] float zoom;
     float zoomMax, zoomMin, velZoom;
     Rigidbody2D mRigidbody2D;
     // Start is called before the first frame update
@@ -31,22 +31,15 @@ public class ZoomCamara : MonoBehaviour
 
     private void CalcularZoom()
     {
-        zoom = mRigidbody2D.velocity.y + 1;
-        if (zoom < 0)
-        {
-            zoom *= -1;
-        }
-        if (mRigidbody2D.velocity.y == 0)
-        {
-            mCam.m_Lens.OrthographicSize = zoomMin;
-        }
-        else if (mCam.m_Lens.OrthographicSize >= zoom)
-        {
-            mCam.m_Lens.OrthographicSize -= velZoom * Time.deltaTime * 2;
-        }
-        else if (mCam.m_Lens.OrthographicSize < zoom)
-        {
-            mCam.m_Lens.OrthographicSize += velZoom * Time.deltaTime;
-        }
+       
+            if (AgitacionBotella.FuerzaBotella < zoomMin)
+            {
+                mCam.m_Lens.OrthographicSize = zoomMin;
+            }else if (AgitacionBotella.FuerzaBotella > zoomMax)
+            {
+                mCam.m_Lens.OrthographicSize = zoomMax;
+            }else
+                mCam.m_Lens.OrthographicSize = AgitacionBotella.FuerzaBotella/3 +1 ;
+        
     }
 }
