@@ -10,7 +10,7 @@ public class Lanzamiento : MonoBehaviour
     private new Rigidbody2D rigidbody;
     [SerializeField] private float stopTime;
     private static bool lanzado = false;//VERIFICAR SI LA BOTELLA FUE LANZADA SRRY NMAYUS   
-
+    
     public static bool Lanzado => lanzado;
 
     // Start is called before the first frame update
@@ -69,5 +69,6 @@ public class Lanzamiento : MonoBehaviour
         }
            
     }//solucionar con rayos(solucionado :3)
+
 
 }

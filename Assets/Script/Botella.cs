@@ -1,9 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Botella : MonoBehaviour
 {
+    [SerializeField] private float fuerzaSustentacion = 50;
+    
+    private Rigidbody2D rigidbody;
     public static Botella instance = null;
     static GameManager gm;
     ZoomCamara zoomCamara;
@@ -28,6 +32,7 @@ public class Botella : MonoBehaviour
     void Start()
     {
         //TextLanzamientos
+        rigidbody = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         gameObject.AddComponent<MedidorDeAltitud>();
@@ -51,5 +56,14 @@ public class Botella : MonoBehaviour
     public void Lanzamiento()
     {
         lanzamiento.LanzamientoBotella();
+    }
+
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.collider.CompareTag("Sustentacion"))
+        {
+            other.rigidbody.AddForce(rigidbody.velocity.normalized * fuerzaSustentacion);
+        }
     }
 }

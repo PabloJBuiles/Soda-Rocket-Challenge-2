@@ -32,13 +32,14 @@ public class GameManager : MonoBehaviour
         }
     }
     void Start()
-    {
+    {/*
         for (int i = 0; i < botellasSprites.Length; i++)
         {
             botellasAdquiridas.Add(new bool());
         }
 
         botellasAdquiridas[0] = true;
+        */
     }
 
     public bool ComprarBotella(int idBotella)

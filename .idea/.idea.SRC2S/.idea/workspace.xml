@@ -23,16 +23,16 @@
         <option value="$PROJECT_DIR$/Assets/Script/IObserbable.cs" />
         <option value="$PROJECT_DIR$/Assets/Script/AgitacionBotella.cs" />
         <option value="$PROJECT_DIR$/Assets/Script/ZoomCamara.cs" />
-        <option value="$PROJECT_DIR$/Assets/Script/Lanzamiento.cs" />
         <option value="$PROJECT_DIR$/Assets/Script/DireccionBotella.cs" />
         <option value="$PROJECT_DIR$/Assets/Script/SoundEfect.cs" />
         <option value="$PROJECT_DIR$/Assets/Script/UIObserver.cs" />
         <option value="$PROJECT_DIR$/Assets/Script/MedidorDeAltitud.cs" />
         <option value="$PROJECT_DIR$/Assets/Script/AbregarBotellas.cs" />
         <option value="$PROJECT_DIR$/Assets/Script/BotonCombrarOEquipar.cs" />
-        <option value="$PROJECT_DIR$/Assets/Script/GameManager.cs" />
-        <option value="$PROJECT_DIR$/Assets/Script/Botella.cs" />
         <option value="$PROJECT_DIR$/Assets/Script/AgregarBotellas.cs" />
+        <option value="$PROJECT_DIR$/Assets/Script/GameManager.cs" />
+        <option value="$PROJECT_DIR$/Assets/Script/Lanzamiento.cs" />
+        <option value="$PROJECT_DIR$/Assets/Script/Botella.cs" />
       </list>
     </option>
   </component>
@@ -87,6 +87,7 @@
       <workItem from="1603227861473" duration="12538000" />
       <workItem from="1603292991493" duration="34640000" />
       <workItem from="1603461125626" duration="63000" />
+      <workItem from="1603461490584" duration="1690000" />
     </task>
     <servers />
   </component>
